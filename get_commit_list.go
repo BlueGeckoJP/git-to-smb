@@ -8,6 +8,11 @@ import (
 	"net/http"
 )
 
+type CommitsWithProjectName struct {
+	Commits     []CommitsResp
+	ProjectName string
+}
+
 type CommitsResp struct {
 	SHA    string `json:"sha"`
 	Commit struct {
@@ -19,8 +24,8 @@ type CommitsResp struct {
 	} `json:"commit"`
 }
 
-func GetCommitList(config Config, repos []string) [][]CommitsResp {
-	var commitsList [][]CommitsResp
+func GetCommitList(config Config, repos []string) []CommitsWithProjectName {
+	var commitsList []CommitsWithProjectName
 	for _, v := range repos {
 		url := fmt.Sprintf("https://api.github.com/repos/%s/%s/commits", config.Username, v)
 		request, _ := http.NewRequest("GET", url, nil)
@@ -42,7 +47,10 @@ func GetCommitList(config Config, repos []string) [][]CommitsResp {
 		err = json.Unmarshal(body, &result)
 		LogError(err, fmt.Sprintf("An error occurred while converting Body to Json. %v", err))
 
-		commitsList = append(commitsList, result)
+		var cwpn CommitsWithProjectName
+		cwpn.Commits = result
+		cwpn.ProjectName = v
+		commitsList = append(commitsList, cwpn)
 	}
 	return commitsList
 }

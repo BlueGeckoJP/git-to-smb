@@ -24,10 +24,10 @@ func main() {
 	fmt.Println(repoList)
 
 	commitList := GetCommitList(config, repoList)
-	for _, v := range commitList[1] {
-		fmt.Println(v.Commit)
-		fmt.Println(v.Commit.Message)
-		fmt.Println(v.SHA)
-		fmt.Println()
+	for _, v := range commitList {
+		for _, c := range v.Commits {
+			DownloadCommit(config, v.ProjectName, c.SHA)
+			AddToHistory(fmt.Sprintf("%s@%s", v.ProjectName, c.SHA))
+		}
 	}
 }

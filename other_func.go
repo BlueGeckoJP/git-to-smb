@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log/slog"
 	"reflect"
 	"strconv"
 )
@@ -30,4 +31,10 @@ func StructToMapStringString(data interface{}) map[string]string {
 	}
 
 	return result
+}
+
+func LogError(err error, message string) {
+	if err != nil {
+		slog.Error(message)
+	}
 }
