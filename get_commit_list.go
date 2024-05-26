@@ -6,6 +6,7 @@ import (
 	"io"
 	"log/slog"
 	"net/http"
+	"time"
 )
 
 type CommitsWithProjectName struct {
@@ -27,6 +28,7 @@ type CommitsResp struct {
 func GetCommitList(config Config, repos []string) []CommitsWithProjectName {
 	var commitsList []CommitsWithProjectName
 	for _, v := range repos {
+		time.Sleep(1 * time.Second)
 		url := fmt.Sprintf("https://api.github.com/repos/%s/%s/commits", config.Username, v)
 		request, _ := http.NewRequest("GET", url, nil)
 		request.Header.Set("Authorization", fmt.Sprintf("Bearer %s", config.Token))
