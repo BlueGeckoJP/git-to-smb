@@ -10,6 +10,8 @@ import (
 )
 
 func DownloadCommit(config Config, repo string, sha string) {
+	CheckAndCreateCommitsDir()
+
 	url := fmt.Sprintf("https://api.github.com/repos/%s/%s/zipball/%s", config.Username, repo, sha)
 	request, _ := http.NewRequest("GET", url, nil)
 	request.Header.Set("Authorization", fmt.Sprintf("Bearer %s", config.Token))
@@ -30,4 +32,13 @@ func DownloadCommit(config Config, repo string, sha string) {
 	resp.Body.Close()
 	file.Close()
 	time.Sleep(1 * time.Second)
+}
+
+func CheckAndCreateCommitsDir() {
+	_, err := os.Stat("commits")
+	if err != nil {
+		slog.Info(fmt.Sprintf("The commits folder could not be found. Create a new one. %v", err))
+		err := os.MkdirAll("commits", os.ModePerm)
+		LogError(err, fmt.Sprintf("Failed to make commits folder. %v", err))
+	}
 }
