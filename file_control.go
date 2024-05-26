@@ -22,9 +22,15 @@ func CopyToMountedPath(config Config) {
 		os.MkdirAll(savePath, os.ModePerm)
 	}
 
+	alreadyDownloaded := 0
+
 	err = filepath.Walk("commits", func(path string, info fs.FileInfo, err error) error {
 		if err != nil {
 			return err
+		}
+		if _, err := os.Stat(pathJoin(savePath, fmt.Sprintf("%s.zip", info.Name()))); err == nil {
+			alreadyDownloaded += 1
+			return nil
 		}
 		if _, err := os.Stat(path); err == nil {
 			if stat, _ := os.Stat(path); stat.IsDir() {
@@ -51,6 +57,8 @@ func CopyToMountedPath(config Config) {
 		return nil
 	})
 	LogError(err, fmt.Sprintf("An error occurred while copying a file (filepath.Walk), %v", err))
+
+	slog.Info(fmt.Sprintf("Already Downloaded Count: %v", alreadyDownloaded))
 }
 
 func pathJoin(str1 string, str2 string) string {

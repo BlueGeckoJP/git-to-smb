@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log/slog"
+	"os"
 	"reflect"
 	"strconv"
 )
@@ -36,5 +37,16 @@ func StructToMapStringString(data interface{}) map[string]string {
 func LogError(err error, message string) {
 	if err != nil {
 		slog.Error(message)
+	}
+}
+
+func CheckAndCreateLogJSON() {
+	_, err := os.Stat("log.json")
+	if err != nil {
+		f, err := os.Create("log.json")
+		if err != nil {
+			panic(err)
+		}
+		f.Close()
 	}
 }

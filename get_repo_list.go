@@ -20,7 +20,7 @@ func GetRepoList(config Config) []string {
 	resp, err := client.Do(request)
 	LogError(err, fmt.Sprintf("An error occurred while retrieving a list of repositories via GitHub's API. %v", err))
 	defer resp.Body.Close()
-	slog.Info(fmt.Sprintf("GitHub repos | Status code: %v", resp.StatusCode))
+	slog.Info(fmt.Sprintf("GitHub repos | Status code: %v | %v", resp.StatusCode, resp.Request.URL))
 	if resp.StatusCode != http.StatusOK {
 		slog.Error(fmt.Sprintf("A status code other than http.StatusOK is returned from the GitHub API. %v", resp.StatusCode))
 	}

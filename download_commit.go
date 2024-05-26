@@ -16,7 +16,7 @@ func DownloadCommit(config Config, repo string, sha string) {
 	client := new(http.Client)
 	resp, err := client.Do(request)
 	LogError(err, fmt.Sprintf("Error while downloading commit zipfile from GitHub API. %v", err))
-	slog.Info(fmt.Sprintf("GitHub download | Status Code: %v", resp.StatusCode))
+	slog.Info(fmt.Sprintf("GitHub download | Status Code: %v | %v", resp.StatusCode, resp.Request.URL))
 	if resp.StatusCode != http.StatusOK {
 		slog.Error(fmt.Sprintf("A status code other than http.StatusOK is returned from the GitHub API. %v", resp.StatusCode))
 	}

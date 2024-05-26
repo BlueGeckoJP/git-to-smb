@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log/slog"
 	"os"
 	"time"
 
@@ -15,6 +16,14 @@ type Config struct {
 }
 
 func main() {
+	CheckAndCreateLogJSON()
+	logJson, err := os.OpenFile("log.json", os.O_RDWR|os.O_APPEND, os.ModePerm)
+	if err != nil {
+		panic(err)
+	}
+	logger := slog.New(slog.NewJSONHandler(logJson, nil))
+	slog.SetDefault(logger)
+
 	data, err := os.ReadFile("config.yaml")
 	LogError(err, fmt.Sprintf("An error occurred while loading the file. %v", err))
 
@@ -24,7 +33,7 @@ func main() {
 
 	repoList := GetRepoList(config)
 	time.Sleep(1 * time.Second)
-	fmt.Println(repoList)
+	slog.Info(fmt.Sprintf("Repo List: %v", repoList))
 
 	commitList := GetCommitList(config, repoList)
 	time.Sleep(1 * time.Second)

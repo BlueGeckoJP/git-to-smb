@@ -37,7 +37,7 @@ func GetCommitList(config Config, repos []string) []CommitsWithProjectName {
 		resp, err := client.Do(request)
 		LogError(err, fmt.Sprintf("Error while retrieving commit history from GitHub API. %v", err))
 		defer resp.Body.Close()
-		slog.Info(fmt.Sprintf("GitHub commits | Status Code: %v", resp.StatusCode))
+		slog.Info(fmt.Sprintf("GitHub commits | Status Code: %v | %v", resp.StatusCode, resp.Request.URL))
 		if resp.StatusCode != http.StatusOK {
 			slog.Error(fmt.Sprintf("A status code other than http.StatusOK is returned from the GitHub API. %v", resp.StatusCode))
 		}
